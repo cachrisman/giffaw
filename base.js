@@ -6,11 +6,28 @@ var render = function(responseData) {
 };
 
 $(document).on("ready", function() {
+    var query = null;
     $.get("http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC", render);
-    $('form').on("submit", function(e){
+    $('form').on("submit", function(e) {
         e.preventDefault();
-        var query = $('input').val().toLowerCase().replace(/\s+/g, "-");
+        query = $('input').val().toLowerCase().replace(/\s+/g, "+");
         $('img').remove();
-        $.get("http://api.giphy.com/v1/gifs/search?q="+query+"&api_key=dc6zaTOxFJmzC", render);
+        $.get("http://api.giphy.com/v1/gifs/search?q=" + query + "&api_key=dc6zaTOxFJmzC", render);
+    });
+
+    $(window).scroll(function() {
+        var limit = 25;
+        if ($(window).scrollTop() + $(window).height() >= $(document).height()) {
+            // alert("reached bottom!");
+            if (query) {
+                console.log("http://api.giphy.com/v1/gifs/search?q=" + query + "&api_key=dc6zaTOxFJmzC&limit=" + limit);
+                $.get("http://api.giphy.com/v1/gifs/search?q=" + query + "&api_key=dc6zaTOxFJmzC&limit=" + limit, render);
+
+            } else {
+                console.log("http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=" + limit);
+                $.get("http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=" + limit, render);
+            }
+        }
+        // limit += 25;
     });
 });
